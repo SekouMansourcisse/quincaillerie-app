@@ -1,0 +1,71 @@
+import express, { Application, Request, Response } from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import pool from './config/database';
+
+// Routes
+import authRoutes from './routes/authRoutes';
+import productRoutes from './routes/productRoutes';
+import saleRoutes from './routes/saleRoutes';
+import categoryRoutes from './routes/categoryRoutes';
+import supplierRoutes from './routes/supplierRoutes';
+import customerRoutes from './routes/customerRoutes';
+import userRoutes from './routes/userRoutes';
+
+dotenv.config();
+
+const app: Application = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  credentials: true
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/sales', saleRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/suppliers', supplierRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/users', userRoutes);
+
+// Route de test
+app.get('/api/health', (req: Request, res: Response) => {
+  res.json({ status: 'OK', message: 'API de gestion de quincaillerie en ligne' });
+});
+
+// Route 404
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ error: 'Route non trouvée' });
+});
+
+// Démarrage du serveur (uniquement en développement local)
+const startServer = async () => {
+  try {
+    // Test de connexion à la base de données
+    await pool.query('SELECT NOW()');
+    console.log('✅ Base de données connectée');
+
+    app.listen(PORT, () => {
+      console.log(`\n🚀 Serveur démarré sur le port ${PORT}`);
+      console.log(`📍 API disponible sur http://localhost:${PORT}/api`);
+      console.log(`🏥 Health check: http://localhost:${PORT}/api/health\n`);
+    });
+  } catch (error) {
+    console.error('❌ Erreur de démarrage du serveur:', error);
+    process.exit(1);
+  }
+};
+
+// Démarrer le serveur uniquement si ce fichier est exécuté directement
+// (pas quand il est importé par Vercel)
+if (require.main === module) {
+  startServer();
+}
+
+export default app;
