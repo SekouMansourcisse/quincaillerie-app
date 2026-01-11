@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useToast } from '../../context/ToastContext';
 import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';
 

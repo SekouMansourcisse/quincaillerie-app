@@ -4,7 +4,7 @@ import { useToast } from '../context/ToastContext';
 import { saleService } from '../services/saleService';
 import { productService } from '../services/productService';
 import { Product, SaleItem } from '../types';
-import { Plus, Trash2, ShoppingCart, Barcode, Keyboard, Search } from 'lucide-react';
+import { Trash2, ShoppingCart, Barcode, Keyboard, Search } from 'lucide-react';
 
 const Sales: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);

@@ -14,7 +14,7 @@ import { categoryService } from '../services/categoryService';
 import { supplierService } from '../services/supplierService';
 import { Product, Category, Supplier } from '../types';
 import { Plus, Search, Edit2, Trash2, Package, Download } from 'lucide-react';
-import { exportProductsToCSV, exportInventoryToCSV } from '../utils/exportUtils';
+import { exportProductsToCSV } from '../utils/exportUtils';
 import Pagination from '../components/common/Pagination';
 
 const Products: React.FC = () => {
@@ -281,24 +281,24 @@ const Products: React.FC = () => {
               action={
                 !searchTerm
                   ? {
-                      label: "Ajouter un produit",
-                      onClick: () => {
-                        resetForm();
-                        setShowModal(true);
-                      },
-                      icon: Plus
-                    }
+                    label: "Ajouter un produit",
+                    onClick: () => {
+                      resetForm();
+                      setShowModal(true);
+                    },
+                    icon: Plus
+                  }
                   : undefined
               }
               secondaryAction={
                 searchTerm
                   ? {
-                      label: "Effacer la recherche",
-                      onClick: () => {
-                        setSearchTerm('');
-                        setCurrentPage(1);
-                      }
+                    label: "Effacer la recherche",
+                    onClick: () => {
+                      setSearchTerm('');
+                      setCurrentPage(1);
                     }
+                  }
                   : undefined
               }
             />
@@ -325,8 +325,8 @@ const Products: React.FC = () => {
                       <td>
                         <span
                           className={`px-2 py-1 rounded ${(product.current_stock || 0) <= (product.min_stock || 0)
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-green-100 text-green-800'
+                            ? 'bg-red-100 text-red-800'
+                            : 'bg-green-100 text-green-800'
                             }`}
                         >
                           {product.current_stock}

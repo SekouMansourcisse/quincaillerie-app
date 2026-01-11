@@ -10,7 +10,6 @@ import {
   DollarSign,
   ShoppingCart,
   AlertTriangle,
-  Package,
   Download
 } from 'lucide-react';
 import { exportLowStockToCSV } from '../utils/exportUtils';

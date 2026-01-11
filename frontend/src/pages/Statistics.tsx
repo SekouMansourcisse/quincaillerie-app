@@ -18,7 +18,7 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
-import { TrendingUp, Package, DollarSign, Calendar } from 'lucide-react';
+import { TrendingUp, DollarSign, Calendar } from 'lucide-react';
 
 const Statistics: React.FC = () => {
   const [sales, setSales] = useState<Sale[]>([]);
@@ -263,7 +263,7 @@ const Statistics: React.FC = () => {
                   fill="#8884d8"
                   dataKey="value"
                 >
-                  {getPaymentMethods().map((entry, index) => (
+                  {getPaymentMethods().map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
