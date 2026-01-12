@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// En production sur Vercel, on utilise le chemin relatif /api qui sera géré par les rewrites
+// En développement, le proxy Vite redirigera /api vers http://localhost:5000
+const API_URL = import.meta.env.VITE_API_URL || '/api';
+
+console.log('API URL configured:', API_URL);
 
 const api = axios.create({
   baseURL: API_URL,
