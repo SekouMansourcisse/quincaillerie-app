@@ -90,3 +90,33 @@ export const getSalesStats = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ error: 'Erreur serveur' });
   }
 };
+
+export const getCashReport = async (req: AuthRequest, res: Response) => {
+  try {
+    const { date } = req.query;
+
+    // Si pas de date fournie, utiliser la date du jour
+    const reportDate = date
+      ? String(date)
+      : new Date().toISOString().split('T')[0];
+
+    const report = await SaleModel.getCashReport(reportDate);
+    res.json(report);
+  } catch (error) {
+    console.error('Erreur lors de la génération du rapport de caisse:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+export const getDashboardStats = async (req: AuthRequest, res: Response) => {
+  try {
+    const { days } = req.query;
+    const daysNum = days ? parseInt(days as string) : 30;
+
+    const stats = await SaleModel.getDashboardStats(daysNum);
+    res.json({ stats });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des statistiques:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};

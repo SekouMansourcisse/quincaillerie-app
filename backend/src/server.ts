@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import pool from './config/database';
+import { initializeDatabase } from './config/init-db';
 
 // Routes
 import authRoutes from './routes/authRoutes';
@@ -11,6 +12,8 @@ import categoryRoutes from './routes/categoryRoutes';
 import supplierRoutes from './routes/supplierRoutes';
 import customerRoutes from './routes/customerRoutes';
 import userRoutes from './routes/userRoutes';
+import stockMovementRoutes from './routes/stockMovementRoutes';
+import returnRoutes from './routes/returnRoutes';
 
 dotenv.config();
 
@@ -19,7 +22,11 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: [
+    process.env.CORS_ORIGIN || 'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3002'
+  ],
   credentials: true
 }));
 app.use(express.json());
@@ -33,10 +40,12 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/stock-movements', stockMovementRoutes);
+app.use('/api/returns', returnRoutes);
 
 // Route de test
 app.get('/api/health', (req: Request, res: Response) => {
-  res.json({ status: 'OK', message: 'API de gestion de quincaillerie en ligne' });
+  res.json({ status: 'OK', message: 'API de gestion de quincaillerie en ligne', database: 'SQLite' });
 });
 
 // Route 404
@@ -44,12 +53,15 @@ app.use((req: Request, res: Response) => {
   res.status(404).json({ error: 'Route non trouvée' });
 });
 
-// Démarrage du serveur (uniquement en développement local)
+// Démarrage du serveur
 const startServer = async () => {
   try {
-    // Test de connexion à la base de données
-    await pool.query('SELECT NOW()');
-    console.log('✅ Base de données connectée');
+    // Initialiser la base de données SQLite
+    await initializeDatabase();
+
+    // Test de connexion
+    const result = await pool.query('SELECT 1 as test');
+    console.log('✅ Base de données SQLite connectée');
 
     app.listen(PORT, () => {
       console.log(`\n🚀 Serveur démarré sur le port ${PORT}`);
@@ -63,7 +75,6 @@ const startServer = async () => {
 };
 
 // Démarrer le serveur uniquement si ce fichier est exécuté directement
-// (pas quand il est importé par Vercel)
 if (require.main === module) {
   startServer();
 }

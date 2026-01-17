@@ -243,4 +243,196 @@ export class SaleModel {
     const result = await pool.query(query, values);
     return result.rows[0];
   }
+
+  // Rapport de caisse journalier
+  static async getCashReport(date: string): Promise<any> {
+    // Statistiques globales du jour
+    const statsQuery = `
+      SELECT
+        COUNT(*) as total_transactions,
+        COALESCE(SUM(net_amount), 0) as total_revenue,
+        COALESCE(SUM(discount), 0) as total_discount,
+        COALESCE(AVG(net_amount), 0) as average_sale
+      FROM sales
+      WHERE DATE(sale_date) = $1
+    `;
+    const statsResult = await pool.query(statsQuery, [date]);
+
+    // Répartition par mode de paiement
+    const paymentQuery = `
+      SELECT
+        payment_method,
+        COUNT(*) as count,
+        COALESCE(SUM(net_amount), 0) as total
+      FROM sales
+      WHERE DATE(sale_date) = $1
+      GROUP BY payment_method
+      ORDER BY total DESC
+    `;
+    const paymentResult = await pool.query(paymentQuery, [date]);
+
+    // Répartition par statut de paiement
+    const statusQuery = `
+      SELECT
+        payment_status,
+        COUNT(*) as count,
+        COALESCE(SUM(net_amount), 0) as total
+      FROM sales
+      WHERE DATE(sale_date) = $1
+      GROUP BY payment_status
+    `;
+    const statusResult = await pool.query(statusQuery, [date]);
+
+    // Top 5 produits vendus du jour
+    const topProductsQuery = `
+      SELECT
+        si.product_name,
+        SUM(si.quantity) as total_quantity,
+        SUM(si.subtotal) as total_revenue
+      FROM sale_items si
+      JOIN sales s ON si.sale_id = s.id
+      WHERE DATE(s.sale_date) = $1
+      GROUP BY si.product_name
+      ORDER BY total_revenue DESC
+      LIMIT 5
+    `;
+    const topProductsResult = await pool.query(topProductsQuery, [date]);
+
+    // Ventes par heure
+    const hourlyQuery = `
+      SELECT
+        CAST(strftime('%H', sale_date) AS INTEGER) as hour,
+        COUNT(*) as count,
+        COALESCE(SUM(net_amount), 0) as total
+      FROM sales
+      WHERE DATE(sale_date) = $1
+      GROUP BY hour
+      ORDER BY hour
+    `;
+    const hourlyResult = await pool.query(hourlyQuery, [date]);
+
+    // Liste des ventes du jour
+    const salesQuery = `
+      SELECT s.*, u.username as cashier_name
+      FROM sales s
+      LEFT JOIN users u ON s.user_id = u.id
+      WHERE DATE(s.sale_date) = $1
+      ORDER BY s.sale_date DESC
+    `;
+    const salesResult = await pool.query(salesQuery, [date]);
+
+    return {
+      date,
+      summary: statsResult.rows[0],
+      byPaymentMethod: paymentResult.rows,
+      byPaymentStatus: statusResult.rows,
+      topProducts: topProductsResult.rows,
+      hourlyBreakdown: hourlyResult.rows,
+      sales: salesResult.rows
+    };
+  }
+
+  // Statistiques avancées pour le tableau de bord
+  static async getDashboardStats(days: number = 30): Promise<any> {
+    // Ventes par jour sur les X derniers jours
+    const salesByDayQuery = `
+      SELECT
+        DATE(sale_date) as date,
+        COUNT(*) as count,
+        COALESCE(SUM(net_amount), 0) as total
+      FROM sales
+      WHERE sale_date >= date('now', '-${days} days')
+      GROUP BY DATE(sale_date)
+      ORDER BY date ASC
+    `;
+    const salesByDayResult = await pool.query(salesByDayQuery);
+
+    // Ventes par mode de paiement
+    const paymentMethodQuery = `
+      SELECT
+        payment_method,
+        COUNT(*) as count,
+        COALESCE(SUM(net_amount), 0) as total
+      FROM sales
+      WHERE sale_date >= date('now', '-${days} days')
+      GROUP BY payment_method
+    `;
+    const paymentMethodResult = await pool.query(paymentMethodQuery);
+
+    // Top 10 produits vendus
+    const topProductsQuery = `
+      SELECT
+        si.product_name,
+        SUM(si.quantity) as total_quantity,
+        SUM(si.subtotal) as total_revenue
+      FROM sale_items si
+      JOIN sales s ON si.sale_id = s.id
+      WHERE s.sale_date >= date('now', '-${days} days')
+      GROUP BY si.product_name
+      ORDER BY total_revenue DESC
+      LIMIT 10
+    `;
+    const topProductsResult = await pool.query(topProductsQuery);
+
+    // Ventes par catégorie
+    const categoryQuery = `
+      SELECT
+        COALESCE(c.name, 'Sans catégorie') as category_name,
+        SUM(si.quantity) as total_quantity,
+        SUM(si.subtotal) as total_revenue
+      FROM sale_items si
+      JOIN sales s ON si.sale_id = s.id
+      LEFT JOIN products p ON si.product_id = p.id
+      LEFT JOIN categories c ON p.category_id = c.id
+      WHERE s.sale_date >= date('now', '-${days} days')
+      GROUP BY c.name
+      ORDER BY total_revenue DESC
+    `;
+    const categoryResult = await pool.query(categoryQuery);
+
+    // Comparaison avec période précédente
+    const currentPeriodQuery = `
+      SELECT
+        COUNT(*) as total_sales,
+        COALESCE(SUM(net_amount), 0) as total_revenue
+      FROM sales
+      WHERE sale_date >= date('now', '-${days} days')
+    `;
+    const currentResult = await pool.query(currentPeriodQuery);
+
+    const previousPeriodQuery = `
+      SELECT
+        COUNT(*) as total_sales,
+        COALESCE(SUM(net_amount), 0) as total_revenue
+      FROM sales
+      WHERE sale_date >= date('now', '-${days * 2} days')
+        AND sale_date < date('now', '-${days} days')
+    `;
+    const previousResult = await pool.query(previousPeriodQuery);
+
+    // Calcul des tendances
+    const current = currentResult.rows[0];
+    const previous = previousResult.rows[0];
+
+    const salesTrend = previous.total_sales > 0
+      ? ((current.total_sales - previous.total_sales) / previous.total_sales) * 100
+      : 0;
+
+    const revenueTrend = previous.total_revenue > 0
+      ? ((current.total_revenue - previous.total_revenue) / previous.total_revenue) * 100
+      : 0;
+
+    return {
+      salesByDay: salesByDayResult.rows,
+      byPaymentMethod: paymentMethodResult.rows,
+      topProducts: topProductsResult.rows,
+      byCategory: categoryResult.rows,
+      trends: {
+        currentPeriod: current,
+        previousPeriod: previous,
+        salesTrend: Math.round(salesTrend * 10) / 10,
+        revenueTrend: Math.round(revenueTrend * 10) / 10
+      }
+    };
+  }
 }

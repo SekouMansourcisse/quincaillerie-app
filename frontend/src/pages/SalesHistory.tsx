@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout/Layout';
 import { saleService } from '../services/saleService';
 import { Sale } from '../types';
-import { Eye, FileText, Calendar, Download, Printer } from 'lucide-react';
-import { exportSalesToCSV, printInvoice } from '../utils/exportUtils';
+import { Eye, FileText, Calendar, Download, Printer, MessageCircle } from 'lucide-react';
+import { exportSalesToCSV } from '../utils/exportUtils';
 import Pagination from '../components/common/Pagination';
+import InvoiceModal from '../components/Invoice/InvoiceModal';
 
 const SalesHistory: React.FC = () => {
   const [sales, setSales] = useState<Sale[]>([]);
@@ -13,7 +14,7 @@ const SalesHistory: React.FC = () => {
   const ITEMS_PER_PAGE = 10;
   const [loading, setLoading] = useState(true);
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [filters, setFilters] = useState({
     start_date: '',
     end_date: '',
@@ -53,14 +54,17 @@ const SalesHistory: React.FC = () => {
     try {
       const sale = await saleService.getSaleById(id);
       setSelectedSale(sale);
-      setShowModal(true);
+      setShowInvoiceModal(true);
     } catch (error) {
       console.error('Erreur lors du chargement des détails:', error);
     }
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XAF' }).format(amount);
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'decimal',
+      minimumFractionDigits: 0
+    }).format(amount) + ' FCFA';
   };
 
   const formatDate = (date: string) => {
@@ -75,12 +79,12 @@ const SalesHistory: React.FC = () => {
 
   const getPaymentStatusBadge = (status: string) => {
     const statusMap: any = {
-      paid: { label: 'Payé', class: 'bg-green-100 text-green-800' },
-      pending: { label: 'En attente', class: 'bg-yellow-100 text-yellow-800' },
-      partial: { label: 'Partiel', class: 'bg-orange-100 text-orange-800' }
+      paid: { label: 'Payé', class: 'badge-success' },
+      pending: { label: 'En attente', class: 'badge-warning' },
+      partial: { label: 'Partiel', class: 'badge-danger' }
     };
     const s = statusMap[status] || statusMap.paid;
-    return <span className={`px-2 py-1 rounded-full text-sm ${s.class}`}>{s.label}</span>;
+    return <span className={`badge ${s.class}`}>{s.label}</span>;
   };
 
   const getPaymentMethodLabel = (method: string) => {
@@ -96,15 +100,15 @@ const SalesHistory: React.FC = () => {
   return (
     <Layout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Historique des ventes</h1>
-            <p className="text-gray-600 mt-1">Consultez l'historique de toutes les ventes</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Historique des ventes</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">Consultez et imprimez vos factures</p>
           </div>
           <button
             onClick={() => exportSalesToCSV(sales)}
             disabled={sales.length === 0}
-            className="btn btn-primary flex items-center gap-2"
+            className="btn btn-secondary flex items-center gap-2"
           >
             <Download size={20} />
             Exporter CSV
@@ -112,9 +116,10 @@ const SalesHistory: React.FC = () => {
         </div>
 
         <div className="card">
+          {/* Filtres */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Date début</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date début</label>
               <input
                 type="date"
                 value={filters.start_date}
@@ -123,7 +128,7 @@ const SalesHistory: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Date fin</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date fin</label>
               <input
                 type="date"
                 value={filters.end_date}
@@ -132,7 +137,7 @@ const SalesHistory: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Statut</label>
               <select
                 value={filters.payment_status}
                 onChange={(e) => setFilters({ ...filters, payment_status: e.target.value })}
@@ -151,12 +156,13 @@ const SalesHistory: React.FC = () => {
             </div>
           </div>
 
+          {/* Tableau */}
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Chargement...</div>
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400">Chargement...</div>
           ) : sales.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <FileText className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-              <p>Aucune vente trouvée</p>
+            <div className="text-center py-12">
+              <FileText className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+              <p className="text-gray-500 dark:text-gray-400">Aucune vente trouvée</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -166,34 +172,47 @@ const SalesHistory: React.FC = () => {
                     <th>N° Vente</th>
                     <th>Date</th>
                     <th>Montant</th>
-                    <th>Mode paiement</th>
+                    <th>Paiement</th>
                     <th>Statut</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {sales.map((sale) => (
-                    <tr key={sale.id}>
-                      <td className="font-medium">{sale.sale_number}</td>
+                  {sales.map((sale, index) => (
+                    <tr
+                      key={sale.id}
+                      className="animate-fade-in"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <td className="font-medium text-gray-900 dark:text-white">{sale.sale_number}</td>
                       <td>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
                           <Calendar size={16} className="text-gray-400" />
                           {formatDate(sale.sale_date || sale.created_at || '')}
                         </div>
                       </td>
-                      <td className="font-semibold text-primary-600">
+                      <td className="font-semibold text-primary-600 dark:text-primary-400">
                         {formatCurrency(sale.net_amount)}
                       </td>
-                      <td>{getPaymentMethodLabel(sale.payment_method)}</td>
+                      <td className="text-gray-600 dark:text-gray-300">{getPaymentMethodLabel(sale.payment_method)}</td>
                       <td>{getPaymentStatusBadge(sale.payment_status)}</td>
                       <td>
-                        <button
-                          onClick={() => viewSaleDetails(sale.id!)}
-                          className="btn btn-secondary flex items-center gap-2 py-1 px-3"
-                        >
-                          <Eye size={16} />
-                          Détails
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => viewSaleDetails(sale.id!)}
+                            className="p-2 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
+                            title="Voir la facture"
+                          >
+                            <Eye size={18} />
+                          </button>
+                          <button
+                            onClick={() => viewSaleDetails(sale.id!)}
+                            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                            title="Imprimer"
+                          >
+                            <Printer size={18} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -212,108 +231,16 @@ const SalesHistory: React.FC = () => {
         </div>
       </div>
 
-      {showModal && selectedSale && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b">
-              <h2 className="text-2xl font-bold">Détails de la vente</h2>
-              <p className="text-gray-600">N° {selectedSale.sale_number}</p>
-            </div>
-
-            <div className="p-6 space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600">Date</p>
-                  <p className="font-semibold">
-                    {formatDate(selectedSale.sale_date || selectedSale.created_at || '')}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Statut</p>
-                  <div>{getPaymentStatusBadge(selectedSale.payment_status)}</div>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Mode de paiement</p>
-                  <p className="font-semibold">{getPaymentMethodLabel(selectedSale.payment_method)}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Montant total</p>
-                  <p className="font-semibold text-lg text-primary-600">
-                    {formatCurrency(selectedSale.net_amount)}
-                  </p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="font-semibold mb-4">Articles vendus</h3>
-                <table className="w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-4 py-2 text-left text-sm">Produit</th>
-                      <th className="px-4 py-2 text-right text-sm">Qté</th>
-                      <th className="px-4 py-2 text-right text-sm">Prix unitaire</th>
-                      <th className="px-4 py-2 text-right text-sm">Sous-total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selectedSale.items?.map((item, index) => (
-                      <tr key={index} className="border-t">
-                        <td className="px-4 py-2">{item.product_name}</td>
-                        <td className="px-4 py-2 text-right">{item.quantity}</td>
-                        <td className="px-4 py-2 text-right">{formatCurrency(item.unit_price)}</td>
-                        <td className="px-4 py-2 text-right font-semibold">
-                          {formatCurrency(item.subtotal)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot className="border-t-2 font-semibold">
-                    <tr>
-                      <td colSpan={3} className="px-4 py-2 text-right">Total</td>
-                      <td className="px-4 py-2 text-right text-lg text-primary-600">
-                        {formatCurrency(selectedSale.total_amount)}
-                      </td>
-                    </tr>
-                    {selectedSale.discount! > 0 && (
-                      <tr>
-                        <td colSpan={3} className="px-4 py-2 text-right">Remise</td>
-                        <td className="px-4 py-2 text-right text-red-600">
-                          -{formatCurrency(selectedSale.discount!)}
-                        </td>
-                      </tr>
-                    )}
-                    <tr className="text-lg">
-                      <td colSpan={3} className="px-4 py-2 text-right">Net à payer</td>
-                      <td className="px-4 py-2 text-right text-primary-600">
-                        {formatCurrency(selectedSale.net_amount)}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-
-              {selectedSale.notes && (
-                <div>
-                  <p className="text-sm text-gray-600 mb-2">Notes</p>
-                  <p className="text-gray-800">{selectedSale.notes}</p>
-                </div>
-              )}
-            </div>
-
-            <div className="p-6 border-t flex gap-4">
-              <button
-                onClick={() => printInvoice(selectedSale)}
-                className="btn btn-primary flex-1 flex items-center justify-center gap-2"
-              >
-                <Printer size={20} />
-                Imprimer la facture
-              </button>
-              <button onClick={() => setShowModal(false)} className="btn btn-secondary flex-1">
-                Fermer
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Modal Facture */}
+      {selectedSale && (
+        <InvoiceModal
+          isOpen={showInvoiceModal}
+          onClose={() => {
+            setShowInvoiceModal(false);
+            setSelectedSale(null);
+          }}
+          sale={selectedSale}
+        />
       )}
     </Layout>
   );

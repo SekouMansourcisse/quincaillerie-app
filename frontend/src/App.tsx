@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ToastContainer from './components/common/ToastContainer';
 import Spinner from './components/common/Spinner';
 import ErrorBoundary from './components/common/ErrorBoundary';
@@ -14,14 +15,22 @@ import Suppliers from './pages/Suppliers';
 import SalesHistory from './pages/SalesHistory';
 import Statistics from './pages/Statistics';
 import Users from './pages/Users';
+import CashReport from './pages/CashReport';
+import Inventory from './pages/Inventory';
+import Returns from './pages/Returns';
 
 const PrivateRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
+      <div className="min-h-screen flex items-center justify-center bg-skin-primary">
+        <div className="text-center">
+          <Spinner size="lg" />
+          <p className="mt-4 text-gray-500 dark:text-gray-400 animate-pulse">
+            Chargement...
+          </p>
+        </div>
       </div>
     );
   }
@@ -102,6 +111,30 @@ const AppRoutes: React.FC = () => {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/cash-report"
+        element={
+          <PrivateRoute>
+            <CashReport />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/inventory"
+        element={
+          <PrivateRoute>
+            <Inventory />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/returns"
+        element={
+          <PrivateRoute>
+            <Returns />
+          </PrivateRoute>
+        }
+      />
       <Route path="/" element={<Navigate to="/dashboard" />} />
     </Routes>
   );
@@ -110,14 +143,16 @@ const AppRoutes: React.FC = () => {
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <Router>
-        <AuthProvider>
-          <ToastProvider>
-            <ToastContainer />
-            <AppRoutes />
-          </ToastProvider>
-        </AuthProvider>
-      </Router>
+      <ThemeProvider>
+        <Router>
+          <AuthProvider>
+            <ToastProvider>
+              <ToastContainer />
+              <AppRoutes />
+            </ToastProvider>
+          </AuthProvider>
+        </Router>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 };
