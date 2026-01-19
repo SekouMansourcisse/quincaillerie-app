@@ -9,7 +9,7 @@ describe('EmptyState Component', () => {
       <EmptyState
         icon={Package}
         title="No items"
-        message="There are no items to display"
+        description="There are no items to display"
       />
     );
 
@@ -23,7 +23,7 @@ describe('EmptyState Component', () => {
       <EmptyState
         icon={Package}
         title="No items"
-        message="There are no items to display"
+        description="There are no items to display"
         action={{ label: 'Add Item', onClick: onAction }}
       />
     );
@@ -40,7 +40,7 @@ describe('EmptyState Component', () => {
       <EmptyState
         icon={Package}
         title="No items"
-        message="There are no items to display"
+        description="There are no items to display"
       />
     );
 

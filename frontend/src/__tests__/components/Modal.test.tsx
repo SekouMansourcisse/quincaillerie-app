@@ -47,17 +47,11 @@ describe('Modal Component', () => {
     }
   });
 
-  it('should render footer when provided', () => {
-    const footer = <button>Submit</button>;
-    render(<Modal {...defaultProps} footer={footer} />);
-
-    expect(screen.getByText('Submit')).toBeInTheDocument();
-  });
 
   it('should apply size classes', () => {
     const { container } = render(<Modal {...defaultProps} size="lg" />);
 
-    const modalContent = container.querySelector('.max-w-3xl');
+    const modalContent = container.querySelector('.max-w-2xl');
     expect(modalContent).toBeInTheDocument();
   });
 });

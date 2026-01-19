@@ -28,7 +28,7 @@ Object.defineProperty(window, 'localStorage', {
 });
 
 // Mock pour fetch
-global.fetch = vi.fn();
+vi.stubGlobal('fetch', vi.fn());
 
 // Mock pour scrollTo
 window.scrollTo = vi.fn();
@@ -38,9 +38,9 @@ window.print = vi.fn();
 
 // Mock pour ResizeObserver
 class ResizeObserverMock {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  observe() { }
+  unobserve() { }
+  disconnect() { }
 }
 window.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver;
 
