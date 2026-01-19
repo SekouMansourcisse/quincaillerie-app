@@ -13,10 +13,7 @@ import {
   Plus,
   Filter,
   Eye,
-  Edit,
   Trash2,
-  CheckCircle,
-  XCircle,
   Package,
   DollarSign,
   Clock
@@ -102,8 +99,8 @@ const PurchaseOrders: React.FC = () => {
 
   const loadSuppliers = async () => {
     try {
-      const { data } = await supplierService.getAllSuppliers({ page: 1, limit: 1000 });
-      setSuppliers(data);
+      const result = await supplierService.getAllSuppliers({ page: 1, limit: 1000 });
+      setSuppliers(Array.isArray(result) ? result : result.data);
     } catch (error) {
       console.error('Erreur lors du chargement des fournisseurs:', error);
     }
@@ -111,8 +108,8 @@ const PurchaseOrders: React.FC = () => {
 
   const loadProducts = async () => {
     try {
-      const { data } = await productService.getAllProducts({ page: 1, limit: 1000 });
-      setProducts(data);
+      const result = await productService.getAllProducts({ page: 1, limit: 1000 });
+      setProducts(Array.isArray(result) ? result : result.data);
     } catch (error) {
       console.error('Erreur lors du chargement des produits:', error);
     }

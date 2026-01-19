@@ -4,7 +4,7 @@ import { useToast } from '../context/ToastContext';
 import { saleService } from '../services/saleService';
 import { productService } from '../services/productService';
 import { Product, SaleItem, Sale } from '../types';
-import { Trash2, ShoppingCart, Barcode, Keyboard, Search, CheckCircle, Printer, MessageCircle, X } from 'lucide-react';
+import { Trash2, ShoppingCart, Barcode, Keyboard, Search, CheckCircle, Printer, X } from 'lucide-react';
 import InvoiceModal from '../components/Invoice/InvoiceModal';
 
 const Sales: React.FC = () => {
@@ -72,7 +72,7 @@ const Sales: React.FC = () => {
   const loadProducts = async () => {
     try {
       const result = await productService.getAllProducts({ is_active: true, limit: 1000 });
-      setProducts(result.data);
+      setProducts(Array.isArray(result) ? result : result.data);
     } catch (error) {
       console.error('Erreur lors du chargement des produits:', error);
       toast.error('Impossible de charger les produits');
@@ -183,6 +183,10 @@ const Sales: React.FC = () => {
       };
 
       const response = await saleService.createSale(saleData);
+
+      if (!response || !response.id) {
+        throw new Error('ID de vente non reçu');
+      }
 
       // Récupérer les détails de la vente créée
       const createdSale = await saleService.getSaleById(response.id);
