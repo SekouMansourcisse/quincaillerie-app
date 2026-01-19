@@ -4,7 +4,7 @@ import { useToast } from '../context/ToastContext';
 import { saleService } from '../services/saleService';
 import { productService } from '../services/productService';
 import { Product, SaleItem, Sale } from '../types';
-import { Trash2, ShoppingCart, Barcode, Keyboard, Search, CheckCircle, Printer, X } from 'lucide-react';
+import { Trash2, ShoppingCart, Barcode, Keyboard, Search, CheckCircle, Printer, MessageCircle, X } from 'lucide-react';
 import InvoiceModal from '../components/Invoice/InvoiceModal';
 
 const Sales: React.FC = () => {

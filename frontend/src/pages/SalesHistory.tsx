@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout/Layout';
 import { saleService } from '../services/saleService';
 import { Sale } from '../types';
-import { Eye, FileText, Calendar, Download, Printer, MessageCircle } from 'lucide-react';
+import { Eye, FileText, Calendar, Download, Printer } from 'lucide-react';
 import { exportSalesToCSV } from '../utils/exportUtils';
 import Pagination from '../components/common/Pagination';
 import InvoiceModal from '../components/Invoice/InvoiceModal';

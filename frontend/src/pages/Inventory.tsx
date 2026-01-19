@@ -17,9 +17,7 @@ import {
   Filter,
   DollarSign,
   TrendingUp,
-  Boxes,
-  Calendar,
-  Search
+  Boxes
 } from 'lucide-react';
 
 const Inventory: React.FC = () => {
@@ -436,15 +434,14 @@ const Inventory: React.FC = () => {
                           {movement.product_name}
                         </td>
                         <td>
-                          <span className={`font-bold ${
-                            movement.movement_type === 'in' || movement.movement_type === 'return'
+                          <span className={`font-bold ${movement.movement_type === 'in' || movement.movement_type === 'return'
                               ? 'text-green-600 dark:text-green-400'
                               : movement.movement_type === 'out'
-                              ? 'text-red-600 dark:text-red-400'
-                              : 'text-blue-600 dark:text-blue-400'
-                          }`}>
+                                ? 'text-red-600 dark:text-red-400'
+                                : 'text-blue-600 dark:text-blue-400'
+                            }`}>
                             {movement.movement_type === 'in' || movement.movement_type === 'return' ? '+' :
-                             movement.movement_type === 'out' ? '-' : ''}
+                              movement.movement_type === 'out' ? '-' : ''}
                             {movement.quantity}
                           </span>
                         </td>

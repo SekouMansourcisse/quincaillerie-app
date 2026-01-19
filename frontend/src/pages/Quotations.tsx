@@ -14,6 +14,8 @@ import {
   Filter,
   Eye,
   Trash2,
+  CheckCircle,
+  XCircle,
   TrendingUp,
   DollarSign,
   Send,
@@ -101,7 +103,7 @@ const Quotations: React.FC = () => {
 
   const loadCustomers = async () => {
     try {
-      const result = await customerService.getAllCustomers({ page: 1, limit: 1000 });
+      const result = await customerService.getAllCustomers() as any;
       setCustomers(Array.isArray(result) ? result : result.data);
     } catch (error) {
       console.error('Erreur lors du chargement des clients:', error);
@@ -110,7 +112,7 @@ const Quotations: React.FC = () => {
 
   const loadProducts = async () => {
     try {
-      const result = await productService.getAllProducts({ page: 1, limit: 1000 });
+      const result = await productService.getAllProducts() as any;
       setProducts(Array.isArray(result) ? result : result.data);
     } catch (error) {
       console.error('Erreur lors du chargement des produits:', error);

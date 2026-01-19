@@ -10,7 +10,6 @@ const Permissions: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [data, setData] = useState<RolesPermissionsResponse | null>(null);
   const [editedPermissions, setEditedPermissions] = useState<Record<string, number[]>>({});
-  const [hasChanges, setHasChanges] = useState(false);
   const toast = useToast();
 
   useEffect(() => {
@@ -23,7 +22,6 @@ const Permissions: React.FC = () => {
       const result = await permissionService.getAllRolesPermissions();
       setData(result);
       setEditedPermissions(result.rolePermissions);
-      setHasChanges(false);
     } catch (error) {
       console.error('Erreur lors du chargement des permissions:', error);
       toast.error('Impossible de charger les permissions');
@@ -46,7 +44,6 @@ const Permissions: React.FC = () => {
 
       return { ...prev, [role]: newPerms };
     });
-    setHasChanges(true);
   };
 
   const savePermissions = async (role: string) => {
@@ -230,19 +227,17 @@ const Permissions: React.FC = () => {
                               <button
                                 onClick={() => togglePermission(role, permission.id)}
                                 disabled={isAdmin}
-                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                                  hasPermission || isAdmin
+                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${hasPermission || isAdmin
                                     ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400'
                                     : 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
-                                } ${!isAdmin && 'hover:scale-110 cursor-pointer'} ${
-                                  isAdmin && 'cursor-not-allowed opacity-75'
-                                }`}
+                                  } ${!isAdmin && 'hover:scale-110 cursor-pointer'} ${isAdmin && 'cursor-not-allowed opacity-75'
+                                  }`}
                                 title={
                                   isAdmin
                                     ? 'Admin a toutes les permissions'
                                     : hasPermission
-                                    ? 'Retirer la permission'
-                                    : 'Ajouter la permission'
+                                      ? 'Retirer la permission'
+                                      : 'Ajouter la permission'
                                 }
                               >
                                 {hasPermission || isAdmin ? (

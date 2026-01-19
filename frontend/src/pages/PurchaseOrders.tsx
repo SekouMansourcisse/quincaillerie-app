@@ -99,7 +99,7 @@ const PurchaseOrders: React.FC = () => {
 
   const loadSuppliers = async () => {
     try {
-      const result = await supplierService.getAllSuppliers({ page: 1, limit: 1000 });
+      const result = await supplierService.getAllSuppliers() as any;
       setSuppliers(Array.isArray(result) ? result : result.data);
     } catch (error) {
       console.error('Erreur lors du chargement des fournisseurs:', error);
@@ -108,7 +108,7 @@ const PurchaseOrders: React.FC = () => {
 
   const loadProducts = async () => {
     try {
-      const result = await productService.getAllProducts({ page: 1, limit: 1000 });
+      const result = await productService.getAllProducts() as any;
       setProducts(Array.isArray(result) ? result : result.data);
     } catch (error) {
       console.error('Erreur lors du chargement des produits:', error);

@@ -18,7 +18,6 @@ import {
   DollarSign,
   TrendingDown,
   Hash,
-  Calendar,
   Package,
   Banknote,
   CreditCard,
@@ -660,11 +659,10 @@ const Returns: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setRefundMethod('cash')}
-                      className={`flex-1 p-3 rounded-lg border-2 transition-all ${
-                        refundMethod === 'cash'
-                          ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                          : 'border-gray-200 dark:border-gray-700'
-                      }`}
+                      className={`flex-1 p-3 rounded-lg border-2 transition-all ${refundMethod === 'cash'
+                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                        : 'border-gray-200 dark:border-gray-700'
+                        }`}
                     >
                       <Banknote className="w-5 h-5 mx-auto mb-1" />
                       <span className="text-sm">Espèces</span>
@@ -672,11 +670,10 @@ const Returns: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setRefundMethod('credit')}
-                      className={`flex-1 p-3 rounded-lg border-2 transition-all ${
-                        refundMethod === 'credit'
-                          ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                          : 'border-gray-200 dark:border-gray-700'
-                      }`}
+                      className={`flex-1 p-3 rounded-lg border-2 transition-all ${refundMethod === 'credit'
+                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                        : 'border-gray-200 dark:border-gray-700'
+                        }`}
                     >
                       <CreditCard className="w-5 h-5 mx-auto mb-1" />
                       <span className="text-sm">Avoir</span>
@@ -684,11 +681,10 @@ const Returns: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setRefundMethod('exchange')}
-                      className={`flex-1 p-3 rounded-lg border-2 transition-all ${
-                        refundMethod === 'exchange'
-                          ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                          : 'border-gray-200 dark:border-gray-700'
-                      }`}
+                      className={`flex-1 p-3 rounded-lg border-2 transition-all ${refundMethod === 'exchange'
+                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                        : 'border-gray-200 dark:border-gray-700'
+                        }`}
                     >
                       <RefreshCw className="w-5 h-5 mx-auto mb-1" />
                       <span className="text-sm">Échange</span>
