@@ -94,6 +94,74 @@ export interface Customer {
   updated_at?: string;
 }
 
+export interface QuotationItem {
+  id?: number;
+  quotation_id?: number;
+  product_id?: number;
+  product_name: string;
+  quantity: number;
+  unit_price: number;
+  subtotal: number;
+  description?: string;
+}
+
+export interface Quotation {
+  id?: number;
+  quotation_number: string;
+  customer_id?: number;
+  user_id?: number;
+  total_amount: number;
+  discount?: number;
+  tax?: number;
+  net_amount: number;
+  status: 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired' | 'converted';
+  validity_days?: number;
+  valid_until?: string;
+  notes?: string;
+  terms_conditions?: string;
+  quotation_date?: string;
+  converted_to_sale_id?: number;
+  created_at?: string;
+  updated_at?: string;
+  items?: QuotationItem[];
+  customer_name?: string;
+  username?: string;
+}
+
+export interface PurchaseOrderItem {
+  id?: number;
+  po_id?: number;
+  product_id?: number;
+  product_name: string;
+  quantity_ordered: number;
+  quantity_received?: number;
+  unit_price: number;
+  subtotal: number;
+  notes?: string;
+}
+
+export interface PurchaseOrder {
+  id?: number;
+  po_number: string;
+  supplier_id?: number;
+  user_id?: number;
+  total_amount: number;
+  discount?: number;
+  tax?: number;
+  net_amount: number;
+  status: 'draft' | 'sent' | 'partial' | 'received' | 'cancelled';
+  expected_delivery_date?: string;
+  actual_delivery_date?: string;
+  notes?: string;
+  payment_terms?: string;
+  po_date?: string;
+  created_at?: string;
+  updated_at?: string;
+  items?: PurchaseOrderItem[];
+  supplier_name?: string;
+  username?: string;
+}
+
 export interface DashboardStats {
   total_sales: number;
   total_revenue: number;

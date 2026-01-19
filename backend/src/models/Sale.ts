@@ -79,13 +79,18 @@ export class SaleModel {
 
         // Mettre à jour le stock et créer un mouvement de stock
         if (item.product_id) {
+          // Mettre à jour le stock
           const stockQuery = `
             UPDATE products
             SET current_stock = current_stock - $1
             WHERE id = $2
-            RETURNING current_stock
           `;
-          const stockResult = await client.query(stockQuery, [item.quantity, item.product_id]);
+          await client.query(stockQuery, [item.quantity, item.product_id]);
+
+          // Récupérer le nouveau stock
+          const getStockQuery = `SELECT current_stock FROM products WHERE id = $1`;
+          const stockResult = await client.query(getStockQuery, [item.product_id]);
+          const newStock = stockResult.rows[0]?.current_stock || 0;
 
           const movementQuery = `
             INSERT INTO stock_movements (
@@ -100,7 +105,7 @@ export class SaleModel {
             newSale.sale_number,
             sale.user_id,
             newSale.id,
-            stockResult.rows[0].current_stock
+            newStock
           ]);
         }
       }

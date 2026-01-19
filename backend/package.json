@@ -20,9 +20,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/bwip-js": "^3.2.3",
     "axios": "^1.13.2",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^12.6.0",
+    "bwip-js": "^4.8.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",

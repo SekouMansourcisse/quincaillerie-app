@@ -6,9 +6,17 @@
         "dev:backend": "cd backend && npm run dev",
         "dev:frontend": "cd frontend && npm run dev",
         "build": "cd frontend && npm install && npm run build",
-        "install:all": "npm install --prefix backend && npm install --prefix frontend"
+        "install:all": "npm install --prefix backend && npm install --prefix frontend",
+        "prepare:vercel": "cd backend && npm install pg @types/pg",
+        "create:admin": "node database/create-admin.js"
     },
     "devDependencies": {
         "@vercel/node": "^3.0.0"
+    },
+    "description": "Application de gestion de quincaillerie - Backend Node.js + Frontend React",
+    "keywords": ["quincaillerie", "stock", "inventory", "pos", "vercel"],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VOTRE_USERNAME/VOTRE_REPO.git"
     }
 }

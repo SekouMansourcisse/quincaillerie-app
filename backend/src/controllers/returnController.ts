@@ -62,13 +62,13 @@ export const createReturn = async (req: AuthRequest, res: Response) => {
     }
 
     // Récupérer la vente d'origine si spécifiée
-    let customerId = null;
+    let customerId: number | undefined = undefined;
     if (sale_id) {
       const sale = await SaleModel.findById(sale_id);
       if (!sale) {
         return res.status(404).json({ error: 'Vente d\'origine non trouvée' });
       }
-      customerId = sale.customer_id;
+      customerId = sale.customer_id ?? undefined;
     }
 
     // Générer le numéro de retour

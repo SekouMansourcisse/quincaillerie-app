@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 import { Sale, SaleItem } from '../../types';
+import { useCompanySettings } from '../../context/CompanySettingsContext';
 
 interface InvoiceProps {
   sale: Sale;
@@ -12,14 +13,9 @@ interface InvoiceProps {
   };
 }
 
-const defaultCompanyInfo = {
-  name: 'Quincaillerie Moderne',
-  address: 'Rue du Commerce, Bamako, Mali',
-  phone: '+223 XX XX XX XX',
-  email: 'contact@quincaillerie.com'
-};
-
-const Invoice = forwardRef<HTMLDivElement, InvoiceProps>(({ sale, companyInfo = defaultCompanyInfo }, ref) => {
+const Invoice = forwardRef<HTMLDivElement, InvoiceProps>(({ sale, companyInfo }, ref) => {
+  const { settings } = useCompanySettings();
+  const activeCompanyInfo = companyInfo || settings;
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('fr-FR', {
       style: 'decimal',
@@ -58,10 +54,10 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceProps>(({ sale, companyInfo = 
       {/* En-tête */}
       <div className="flex justify-between items-start mb-8 pb-6 border-b-2 border-gray-300">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">{companyInfo.name}</h1>
-          <p className="text-gray-600 mt-1">{companyInfo.address}</p>
-          <p className="text-gray-600">Tél: {companyInfo.phone}</p>
-          <p className="text-gray-600">{companyInfo.email}</p>
+          <h1 className="text-3xl font-bold text-gray-800">{activeCompanyInfo.name}</h1>
+          <p className="text-gray-600 mt-1">{activeCompanyInfo.address}</p>
+          <p className="text-gray-600">Tél: {activeCompanyInfo.phone}</p>
+          <p className="text-gray-600">{activeCompanyInfo.email}</p>
         </div>
         <div className="text-right">
           <h2 className="text-2xl font-bold text-primary-600">FACTURE</h2>
@@ -148,7 +144,7 @@ const Invoice = forwardRef<HTMLDivElement, InvoiceProps>(({ sale, companyInfo = 
       {/* Pied de page */}
       <div className="mt-8 pt-6 border-t-2 border-gray-300 text-center text-gray-500 text-sm">
         <p className="font-semibold mb-2">Merci pour votre confiance !</p>
-        <p>{companyInfo.name} - {companyInfo.phone}</p>
+        <p>{activeCompanyInfo.name} - {activeCompanyInfo.phone}</p>
         <p className="mt-2 text-xs">Cette facture a été générée automatiquement</p>
       </div>
     </div>

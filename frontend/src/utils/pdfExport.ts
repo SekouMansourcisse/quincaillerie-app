@@ -1,4 +1,5 @@
 import { Sale, SaleItem } from '../types';
+import { getCompanySettings } from '../services/companySettingsService';
 
 interface CompanyInfo {
   name: string;
@@ -6,13 +7,6 @@ interface CompanyInfo {
   phone: string;
   email: string;
 }
-
-const defaultCompanyInfo: CompanyInfo = {
-  name: 'Quincaillerie Moderne',
-  address: 'Rue du Commerce, Bamako, Mali',
-  phone: '+223 XX XX XX XX',
-  email: 'contact@quincaillerie.com'
-};
 
 const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat('fr-FR', {
@@ -55,7 +49,8 @@ const getPaymentStatusLabel = (status: string): string => {
 /**
  * Genere le contenu HTML pour le PDF de la facture
  */
-const generateInvoiceHTML = (sale: Sale, companyInfo: CompanyInfo = defaultCompanyInfo): string => {
+const generateInvoiceHTML = (sale: Sale, companyInfo?: CompanyInfo): string => {
+  const activeCompanyInfo = companyInfo || getCompanySettings();
   const itemsRows = sale.items?.map((item: SaleItem, index: number) => `
     <tr style="background-color: ${index % 2 === 0 ? '#f9fafb' : '#ffffff'};">
       <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">${item.product_name}</td>
@@ -224,10 +219,10 @@ const generateInvoiceHTML = (sale: Sale, companyInfo: CompanyInfo = defaultCompa
         <!-- Header -->
         <div class="header">
           <div class="company-info">
-            <h1>${companyInfo.name}</h1>
-            <p>${companyInfo.address}</p>
-            <p>Tel: ${companyInfo.phone}</p>
-            <p>${companyInfo.email}</p>
+            <h1>${activeCompanyInfo.name}</h1>
+            <p>${activeCompanyInfo.address}</p>
+            <p>Tel: ${activeCompanyInfo.phone}</p>
+            <p>${activeCompanyInfo.email}</p>
           </div>
           <div class="invoice-info">
             <h2>FACTURE</h2>
@@ -300,7 +295,7 @@ const generateInvoiceHTML = (sale: Sale, companyInfo: CompanyInfo = defaultCompa
         <!-- Footer -->
         <div class="footer">
           <p class="thanks">Merci pour votre confiance !</p>
-          <p>${companyInfo.name} - ${companyInfo.phone}</p>
+          <p>${activeCompanyInfo.name} - ${activeCompanyInfo.phone}</p>
           <p style="font-size: 10px; margin-top: 10px;">Cette facture a ete generee automatiquement</p>
         </div>
       </div>

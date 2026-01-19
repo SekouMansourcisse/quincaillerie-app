@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { CompanySettingsProvider } from './context/CompanySettingsContext';
 import ToastContainer from './components/common/ToastContainer';
 import Spinner from './components/common/Spinner';
 import ErrorBoundary from './components/common/ErrorBoundary';
@@ -18,6 +19,9 @@ import Users from './pages/Users';
 import CashReport from './pages/CashReport';
 import Inventory from './pages/Inventory';
 import Returns from './pages/Returns';
+import Quotations from './pages/Quotations';
+import PurchaseOrders from './pages/PurchaseOrders';
+import Settings from './pages/Settings';
 
 const PrivateRoute: React.FC<{ children: React.ReactElement }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -135,6 +139,30 @@ const AppRoutes: React.FC = () => {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/quotations"
+        element={
+          <PrivateRoute>
+            <Quotations />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/purchase-orders"
+        element={
+          <PrivateRoute>
+            <PurchaseOrders />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <PrivateRoute>
+            <Settings />
+          </PrivateRoute>
+        }
+      />
       <Route path="/" element={<Navigate to="/dashboard" />} />
     </Routes>
   );
@@ -146,10 +174,12 @@ const App: React.FC = () => {
       <ThemeProvider>
         <Router>
           <AuthProvider>
-            <ToastProvider>
-              <ToastContainer />
-              <AppRoutes />
-            </ToastProvider>
+            <CompanySettingsProvider>
+              <ToastProvider>
+                <ToastContainer />
+                <AppRoutes />
+              </ToastProvider>
+            </CompanySettingsProvider>
           </AuthProvider>
         </Router>
       </ThemeProvider>

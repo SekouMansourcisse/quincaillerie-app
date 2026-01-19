@@ -6,7 +6,7 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'large';
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 'lg' }) => {
@@ -18,7 +18,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
     sm: 'max-w-md',
     md: 'max-w-lg',
     lg: 'max-w-2xl',
-    xl: 'max-w-4xl'
+    xl: 'max-w-4xl',
+    large: 'max-w-6xl'
   };
 
   useEffect(() => {
@@ -99,7 +100,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 animate-fade-in"
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50 animate-fade-in"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -107,23 +108,23 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
     >
       <div
         ref={modalRef}
-        className={`bg-white rounded-lg ${sizeClasses[size]} w-full max-h-[90vh] overflow-y-auto shadow-xl`}
+        className={`bg-white dark:bg-gray-800 rounded-t-2xl sm:rounded-lg ${sizeClasses[size]} w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto shadow-xl animate-slide-up sm:animate-scale-in`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-white p-6 border-b border-gray-200 flex items-center justify-between z-10">
-          <h2 id="modal-title" className="text-2xl font-bold text-gray-900">
+        <div className="sticky top-0 bg-white dark:bg-gray-800 p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between z-10">
+          <h2 id="modal-title" className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white pr-4">
             {title}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 flex-shrink-0 touch-target"
             aria-label="Fermer le modal"
           >
-            <X size={24} />
+            <X size={20} className="sm:w-6 sm:h-6" />
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {children}
         </div>
       </div>

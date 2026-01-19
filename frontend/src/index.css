@@ -173,6 +173,90 @@
   .gradient-text {
     @apply bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent;
   }
+
+  /* Responsive Table Container */
+  .table-container {
+    @apply w-full overflow-x-auto -mx-4 sm:mx-0;
+  }
+
+  .table-container::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .table-container::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  }
+
+  /* Mobile Table Card View */
+  .mobile-card {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-3 border border-gray-200 dark:border-gray-700;
+  }
+
+  .mobile-card-row {
+    @apply flex justify-between items-start py-2 border-b border-gray-100 dark:border-gray-700 last:border-0;
+  }
+
+  .mobile-card-label {
+    @apply text-sm font-medium text-gray-600 dark:text-gray-400;
+  }
+
+  .mobile-card-value {
+    @apply text-sm text-gray-900 dark:text-gray-100 font-semibold text-right;
+  }
+
+  /* Responsive Grid */
+  .responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+  }
+
+  .responsive-grid-4 {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4;
+  }
+
+  /* Touch Targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  /* Mobile Padding */
+  .mobile-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Responsive Text */
+  .text-responsive-sm {
+    @apply text-xs sm:text-sm;
+  }
+
+  .text-responsive-base {
+    @apply text-sm sm:text-base;
+  }
+
+  .text-responsive-lg {
+    @apply text-base sm:text-lg;
+  }
+
+  .text-responsive-xl {
+    @apply text-lg sm:text-xl;
+  }
+
+  .text-responsive-2xl {
+    @apply text-xl sm:text-2xl;
+  }
+
+  /* Modal Responsive */
+  .modal-content {
+    @apply w-full mx-4 sm:mx-auto sm:max-w-lg md:max-w-2xl lg:max-w-4xl;
+  }
+
+  .modal-content-large {
+    @apply w-full mx-4 sm:mx-auto sm:max-w-2xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl;
+  }
+
+  /* Stack on mobile */
+  .stack-mobile {
+    @apply flex flex-col sm:flex-row gap-2 sm:gap-4;
+  }
 }
 
 @layer utilities {

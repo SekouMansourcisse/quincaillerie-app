@@ -14,6 +14,9 @@ import customerRoutes from './routes/customerRoutes';
 import userRoutes from './routes/userRoutes';
 import stockMovementRoutes from './routes/stockMovementRoutes';
 import returnRoutes from './routes/returnRoutes';
+import permissionRoutes from './routes/permissionRoutes';
+import quotationRoutes from './routes/quotationRoutes';
+import purchaseOrderRoutes from './routes/purchaseOrderRoutes';
 
 dotenv.config();
 
@@ -42,10 +45,13 @@ app.use('/api/customers', customerRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/stock-movements', stockMovementRoutes);
 app.use('/api/returns', returnRoutes);
+app.use('/api/permissions', permissionRoutes);
+app.use('/api/quotations', quotationRoutes);
+app.use('/api/purchase-orders', purchaseOrderRoutes);
 
 // Route de test
 app.get('/api/health', (req: Request, res: Response) => {
-  res.json({ status: 'OK', message: 'API de gestion de quincaillerie en ligne', database: 'SQLite' });
+  res.json({ status: 'OK', message: 'API de gestion de quincaillerie en ligne' });
 });
 
 // Route 404
@@ -56,12 +62,15 @@ app.use((req: Request, res: Response) => {
 // Démarrage du serveur
 const startServer = async () => {
   try {
-    // Initialiser la base de données SQLite
-    await initializeDatabase();
+    // Initialiser la base de données SQLite uniquement en développement
+    if (process.env.NODE_ENV !== 'production' && !process.env.DATABASE_URL) {
+      await initializeDatabase();
+      console.log('✅ Base de données SQLite initialisée');
+    }
 
     // Test de connexion
     const result = await pool.query('SELECT 1 as test');
-    console.log('✅ Base de données SQLite connectée');
+    console.log('✅ Base de données connectée');
 
     app.listen(PORT, () => {
       console.log(`\n🚀 Serveur démarré sur le port ${PORT}`);

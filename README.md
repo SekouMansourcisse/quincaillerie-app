@@ -20,21 +20,41 @@ Application web complète pour la gestion d'une quincaillerie avec gestion de st
 - Axios
 - Lucide React (icônes)
 
-## 🚀 Déploiement
+## 🚀 Déploiement sur Vercel
 
-Cette application est prête pour le déploiement sur **Vercel** avec **Supabase** comme base de données.
+Cette application est prête pour le déploiement sur **Vercel** avec deux options de base de données PostgreSQL.
 
-📖 **[Guide de déploiement complet](./DEPLOYMENT.md)** - Instructions détaillées pour déployer sur Vercel
+### 🎯 Choisissez Votre Base de Données
 
-### Déploiement rapide
+**Option 1 : Vercel Postgres** (Recommandé pour démarrer)
+- ✅ Setup ultra-rapide (5 minutes)
+- ✅ Tout dans Vercel (un seul dashboard)
+- ✅ Configuration automatique
+- ⚠️ 256 MB stockage gratuit
+- 📖 **[Guide rapide](./QUICK-START-VERCEL-POSTGRES.md)** (5 min)
+- 📖 **[Guide complet](./DEPLOIEMENT-VERCEL-POSTGRES.md)**
 
-1. Créez un compte sur [Vercel](https://vercel.com)
-2. Configurez votre base de données sur [Supabase](https://supabase.com)
-3. Connectez votre repository GitHub
-4. Configurez les variables d'environnement
-5. Déployez en un clic !
+**Option 2 : Supabase** (Recommandé pour production)
+- ✅ 500 MB stockage gratuit
+- ✅ Backups automatiques
+- ✅ Fonctionnalités avancées (Auth, Storage, Realtime)
+- ✅ Interface d'administration complète
+- 📖 **[Guide rapide](./QUICK-START-VERCEL.md)** (10 min)
+- 📖 **[Guide complet](./DEPLOIEMENT-VERCEL.md)**
 
-Voir [DEPLOYMENT.md](./DEPLOYMENT.md) pour les instructions complètes.
+**Indécis ?** → **[Aide au choix](./CHOISIR-BDD.md)** (30 secondes)
+
+**Comparer en détail** → **[Comparaison complète](./COMPARAISON-BDD.md)**
+
+### Résumé Déploiement
+
+1. Pousser votre code sur GitHub
+2. Créer un projet Vercel
+3. Choisir et configurer votre base de données (Vercel Postgres OU Supabase)
+4. Configurer les variables d'environnement
+5. Déployer!
+
+📄 **[Voir le résumé complet](./RESUME-DEPLOIEMENT.txt)**
 
 ## Fonctionnalités
 

@@ -18,7 +18,8 @@ import {
   Receipt,
   Boxes,
   RotateCcw,
-  Bell
+  Bell,
+  Settings
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -44,6 +45,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isCollapsed, onToggl
     { path: '/inventory', icon: Boxes, label: 'Inventaire' },
     { path: '/sales', icon: ShoppingCart, label: 'Point de vente' },
     { path: '/sales-history', icon: FileText, label: 'Historique ventes' },
+    { path: '/quotations', icon: FileText, label: 'Devis' },
+    { path: '/purchase-orders', icon: Truck, label: 'Commandes fournisseurs' },
     { path: '/returns', icon: RotateCcw, label: 'Retours & Avoirs' },
     { path: '/cash-report', icon: Receipt, label: 'Rapport de caisse' },
     { path: '/statistics', icon: TrendingUp, label: 'Statistiques' },
@@ -51,6 +54,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isCollapsed, onToggl
 
   if (user?.role === 'admin') {
     menuItems.push({ path: '/users', icon: Users, label: 'Utilisateurs' });
+    menuItems.push({ path: '/settings', icon: Settings, label: 'Paramètres' });
   }
 
   const isActive = (path: string) => location.pathname === path;
@@ -73,9 +77,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isCollapsed, onToggl
 
       {/* Sidebar */}
       <div
-        className={`sidebar ${isCollapsed ? 'sidebar-collapsed' : 'sidebar-expanded'} ${
-          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        }`}
+        className={`sidebar ${isCollapsed ? 'sidebar-collapsed' : 'sidebar-expanded'} ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+          }`}
       >
         {/* Header */}
         <div className="p-4 border-b border-gray-800 flex items-center justify-between">
@@ -117,9 +120,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isCollapsed, onToggl
               key={item.path}
               to={item.path}
               onClick={handleLinkClick}
-              className={`sidebar-item ${isActive(item.path) ? 'sidebar-item-active' : ''} ${
-                isCollapsed ? 'justify-center px-3' : ''
-              }`}
+              className={`sidebar-item ${isActive(item.path) ? 'sidebar-item-active' : ''} ${isCollapsed ? 'justify-center px-3' : ''
+                }`}
               style={{ animationDelay: `${index * 50}ms` }}
               title={isCollapsed ? item.label : undefined}
             >
@@ -177,9 +179,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isCollapsed, onToggl
           {/* Déconnexion */}
           <button
             onClick={logout}
-            className={`sidebar-item w-full text-red-400 hover:text-red-300 hover:bg-red-900/20 ${
-              isCollapsed ? 'justify-center px-3' : ''
-            }`}
+            className={`sidebar-item w-full text-red-400 hover:text-red-300 hover:bg-red-900/20 ${isCollapsed ? 'justify-center px-3' : ''
+              }`}
             title={isCollapsed ? 'Déconnexion' : undefined}
           >
             <LogOut size={20} />
