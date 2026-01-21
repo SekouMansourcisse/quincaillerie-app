@@ -4,6 +4,26 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// Ne charger SQLite qu'en mode développement
+const isProduction = process.env.NODE_ENV === 'production' || process.env.DATABASE_URL !== undefined;
+
+if (isProduction) {
+  // En production, ce fichier ne devrait jamais être chargé
+  // mais si c'est le cas, on exporte des valeurs null
+  console.log('⚠️ SQLite n\'est pas disponible en mode production');
+  const emptyPool = {
+    query: () => Promise.reject(new Error('SQLite not available in production')),
+    connect: () => Promise.reject(new Error('SQLite not available in production')),
+    end: () => Promise.resolve()
+  };
+  module.exports = { default: emptyPool, rawDb: null };
+  // Ne pas continuer l'exécution
+  if (typeof module !== 'undefined') {
+    // @ts-ignore
+    return;
+  }
+}
+
 // Chemin de la base de données SQLite
 const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '../../data/quincaillerie.db');
 

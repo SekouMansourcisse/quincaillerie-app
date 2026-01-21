@@ -10,9 +10,10 @@ let rawDb: any = null;
 
 if (isProduction) {
   console.log('🌍 Mode PRODUCTION - Utilisation de PostgreSQL');
+  // Import dynamique pour éviter de charger database.sqlite en production
   const prodDb = require('./database.prod');
   pool = prodDb.default;
-  rawDb = prodDb.rawDb;
+  rawDb = null; // Pas de rawDb en production
 } else {
   console.log('💻 Mode DÉVELOPPEMENT - Utilisation de SQLite');
   const devDb = require('./database.sqlite');

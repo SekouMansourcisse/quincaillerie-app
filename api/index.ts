@@ -1,4 +1,4 @@
-import app from '../backend/src/server';
+import app from '../backend/src/server.vercel';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 // Handler pour Vercel Serverless Functions
