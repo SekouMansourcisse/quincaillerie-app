@@ -157,5 +157,5 @@ function extractTableName(query: string, type: 'INSERT' | 'UPDATE' | 'DELETE'): 
 }
 
 // Exporter la base de données brute pour l'initialisation
-export const rawDb = db;
+export const rawDb: any = db;
 export default pool;

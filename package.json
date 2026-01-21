@@ -14,9 +14,18 @@
         "@vercel/node": "^3.0.0"
     },
     "description": "Application de gestion de quincaillerie - Backend Node.js + Frontend React",
-    "keywords": ["quincaillerie", "stock", "inventory", "pos", "vercel"],
+    "keywords": [
+        "quincaillerie",
+        "stock",
+        "inventory",
+        "pos",
+        "vercel"
+    ],
     "repository": {
         "type": "git",
         "url": "https://github.com/VOTRE_USERNAME/VOTRE_REPO.git"
+    },
+    "dependencies": {
+        "pg": "^8.17.2"
     }
 }

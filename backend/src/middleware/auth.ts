@@ -2,17 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { PermissionModel } from '../models/Permission';
 
-export interface AuthRequest extends Request {
-  user?: {
-    id: number;
-    username: string;
-    email: string;
-    role: string;
-    permissions?: string[];
-  };
-}
+// Type alias pour rétrocompatibilité
+export type AuthRequest = Request;
 
-export const auth = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const auth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
@@ -39,7 +32,7 @@ export const auth = async (req: AuthRequest, res: Response, next: NextFunction) 
 
 // Autorisation par rôle (rétrocompatibilité)
 export const authorize = (...roles: string[]) => {
-  return (req: AuthRequest, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({ error: 'Authentification requise' });
     }
@@ -54,7 +47,7 @@ export const authorize = (...roles: string[]) => {
 
 // Autorisation par permission
 export const requirePermission = (...permissions: string[]) => {
-  return async (req: AuthRequest, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({ error: 'Authentification requise' });
     }
@@ -82,7 +75,7 @@ export const requirePermission = (...permissions: string[]) => {
 
 // Vérifier plusieurs permissions (toutes requises)
 export const requireAllPermissions = (...permissions: string[]) => {
-  return async (req: AuthRequest, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({ error: 'Authentification requise' });
     }
