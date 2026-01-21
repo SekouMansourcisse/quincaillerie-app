@@ -346,7 +346,7 @@ export class SaleModel {
         COUNT(*) as count,
         COALESCE(SUM(net_amount), 0) as total
       FROM sales
-      WHERE sale_date >= date('now', '-${days} days')
+      WHERE sale_date >= CURRENT_DATE - INTERVAL '${days} days'
       GROUP BY DATE(sale_date)
       ORDER BY date ASC
     `;
@@ -359,7 +359,7 @@ export class SaleModel {
         COUNT(*) as count,
         COALESCE(SUM(net_amount), 0) as total
       FROM sales
-      WHERE sale_date >= date('now', '-${days} days')
+      WHERE sale_date >= CURRENT_DATE - INTERVAL '${days} days'
       GROUP BY payment_method
     `;
     const paymentMethodResult = await pool.query(paymentMethodQuery);
@@ -372,7 +372,7 @@ export class SaleModel {
         SUM(si.subtotal) as total_revenue
       FROM sale_items si
       JOIN sales s ON si.sale_id = s.id
-      WHERE s.sale_date >= date('now', '-${days} days')
+      WHERE s.sale_date >= CURRENT_DATE - INTERVAL '${days} days'
       GROUP BY si.product_name
       ORDER BY total_revenue DESC
       LIMIT 10
@@ -389,7 +389,7 @@ export class SaleModel {
       JOIN sales s ON si.sale_id = s.id
       LEFT JOIN products p ON si.product_id = p.id
       LEFT JOIN categories c ON p.category_id = c.id
-      WHERE s.sale_date >= date('now', '-${days} days')
+      WHERE s.sale_date >= CURRENT_DATE - INTERVAL '${days} days'
       GROUP BY c.name
       ORDER BY total_revenue DESC
     `;
@@ -401,7 +401,7 @@ export class SaleModel {
         COUNT(*) as total_sales,
         COALESCE(SUM(net_amount), 0) as total_revenue
       FROM sales
-      WHERE sale_date >= date('now', '-${days} days')
+      WHERE sale_date >= CURRENT_DATE - INTERVAL '${days} days'
     `;
     const currentResult = await pool.query(currentPeriodQuery);
 
@@ -410,8 +410,8 @@ export class SaleModel {
         COUNT(*) as total_sales,
         COALESCE(SUM(net_amount), 0) as total_revenue
       FROM sales
-      WHERE sale_date >= date('now', '-${days * 2} days')
-        AND sale_date < date('now', '-${days} days')
+      WHERE sale_date >= CURRENT_DATE - INTERVAL '${days * 2} days'
+        AND sale_date < CURRENT_DATE - INTERVAL '${days} days'
     `;
     const previousResult = await pool.query(previousPeriodQuery);
 
