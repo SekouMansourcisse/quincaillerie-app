@@ -60,3 +60,6 @@ backend/data/
 
 # Vercel
 .vercel
+
+.vercel
+.env*.local

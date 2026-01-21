@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { Sale, SaleItem } from '../../types';
 import { useCompanySettings } from '../../context/CompanySettingsContext';
 

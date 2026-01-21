@@ -7,12 +7,11 @@ import { saleService, DashboardAdvancedStats } from '../services/saleService';
 import { productService } from '../services/productService';
 import { DashboardStats, Product } from '../types';
 import {
-  LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell
+  AreaChart, Area, BarChart, Bar, PieChart, Pie,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
 import {
   TrendingUp,
-  TrendingDown,
   DollarSign,
   ShoppingCart,
   AlertTriangle,
@@ -281,7 +280,7 @@ const Dashboard: React.FC = () => {
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     labelLine={false}
                   >
-                    {paymentPieData.map((entry, index) => (
+                    {paymentPieData.map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>

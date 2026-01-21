@@ -53,7 +53,9 @@ const StockAlertNotification: React.FC<StockAlertNotificationProps> = ({
   }, []);
 
   const getStockLevel = (product: Product) => {
-    const ratio = product.current_stock / product.min_stock;
+    const currentStock = product.current_stock ?? 0;
+    const minStock = product.min_stock ?? 1;
+    const ratio = currentStock / minStock;
     if (ratio === 0) return 'critical';
     if (ratio <= 0.5) return 'danger';
     return 'warning';

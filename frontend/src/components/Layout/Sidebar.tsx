@@ -18,7 +18,6 @@ import {
   Receipt,
   Boxes,
   RotateCcw,
-  Bell,
   Settings
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -35,7 +34,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
   const location = useLocation();
   const { logout, user } = useAuth();
-  const { theme, toggleTheme, isDark } = useTheme();
+  const { toggleTheme, isDark } = useTheme();
 
   const menuItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Tableau de bord' },
