@@ -26,6 +26,8 @@
         "url": "https://github.com/VOTRE_USERNAME/VOTRE_REPO.git"
     },
     "dependencies": {
+        "bcryptjs": "^3.0.3",
+        "dotenv": "^17.2.3",
         "pg": "^8.17.2"
     }
 }

@@ -98,14 +98,15 @@ const Sales: React.FC = () => {
           : item
       ));
     } else {
+      const unitPrice = Number(product.selling_price) || 0;
       setCartItems([
         ...cartItems,
         {
           product_id: product.id,
           product_name: product.name,
           quantity: 1,
-          unit_price: product.selling_price,
-          subtotal: product.selling_price
+          unit_price: unitPrice,
+          subtotal: unitPrice
         }
       ]);
     }
